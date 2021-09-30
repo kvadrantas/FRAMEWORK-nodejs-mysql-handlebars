@@ -75,7 +75,7 @@ app.get("/visaLentele", async (req, res) => {
     }
   });
 
-  // VIENO IRASO HTML FORMOS GENERAVIMAS
+// VIENO IRASO HTML FORMOS GENERAVIMAS
   app.get("/eilute/:id?", async (req, res) => {
     // Tikriname ar yra perduotas id parametras.
     // id yra -> senas irasas ir forma uzpildom iraso duomenimis
@@ -125,11 +125,72 @@ app.get("/visaLentele", async (req, res) => {
       } else {
         // Jei id buvo nurodytas ne skaicius permetam i visu irasu sarasa
         // o galim parodyt klaidos forma, kad id negali buti stringas
-        res.redirect("/cekiai");
+        res.redirect("/visaLentele");
       }
     } else {
       // Jei id nenurodytas vadinasi tai bus
       // naujo iraso ivedimas
-      res.render("cekis");
+      res.render("eilute");
     }
   });
+
+// IRASO SAUGOJIIMAS
+app.post("/eilute", async (req, res) => {
+  if (req.body.id) {
+    // id yra -> irasa redaguojam
+    // id nera -> kuriam nauja irasa
+    const id = parseInt(req.body.id);
+    if (
+      // tikrinam duomenu teisinguma
+      !isNaN(id) &&
+      isFinite((new Date(req.body.column1)).getTime()) &&
+      typeof req.body.column2 === "string" &&
+      req.body.column2.trim() !== ""
+    ) {
+      let conn;
+      try {
+        conn = await connect();
+        await query(
+          conn,
+          `
+          update visaLentele
+          set column1 = ? , column2 = ?
+          where id = ?`,
+          [new Date(req.body.column1), req.body.column2, id],
+        );
+      } catch (err) {
+        // ivyko klaida skaitant duomenis is DB
+        res.render("klaida", { err });
+        return;
+      } finally {
+        await end(conn);
+      }
+    }
+  } else {
+    // jei nera id, kuriam nauja irasa
+    if (
+      isFinite((new Date(req.body.column1)).getTime()) &&
+      typeof req.body.column2 === "string" &&
+      req.body.column2.trim() !== ""
+    ) {
+      let conn;
+      try {
+        conn = await connect();
+        await query(
+          conn,
+          `
+          insert into visaLentele (column1, column2)
+          values (?, ?)`,
+          [new Date(req.body.column1), req.body.column2],
+        );
+      } catch (err) {
+        // ivyko klaida irasant duomenis i DB
+        res.render("klaida", { err });
+        return;
+      } finally {
+        await end(conn);
+      }
+    }
+  }
+  res.redirect("/visaLentele");
+});

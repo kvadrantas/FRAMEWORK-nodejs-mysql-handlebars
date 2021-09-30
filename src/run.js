@@ -117,63 +117,64 @@
 //   }
 // });
 
-app.post("/cekis", async (req, res) => {
-  if (req.body.id) {
-    // update esama ceki
-    const id = parseInt(req.body.id);
-    if (
-      !isNaN(id) &&
-      isFinite((new Date(req.body.data)).getTime()) &&
-      typeof req.body.parduotuve === "string" &&
-      req.body.parduotuve.trim() !== ""
-    ) {
-      let conn;
-      try {
-        conn = await connect();
-        await query(
-          conn,
-          `
-          update cekiai
-          set data = ? , parduotuve = ?
-          where id = ?`,
-          [new Date(req.body.data), req.body.parduotuve, id],
-        );
-      } catch (err) {
-        // ivyko klaida gaunant duomenis
-        res.render("klaida", { err });
-        return;
-      } finally {
-        await end(conn);
-      }
-    }
-  } else {
-    // insert nauja ceki
-    if (
-      isFinite((new Date(req.body.data)).getTime()) &&
-      typeof req.body.parduotuve === "string" &&
-      req.body.parduotuve.trim() !== ""
-    ) {
-      let conn;
-      try {
-        conn = await connect();
-        await query(
-          conn,
-          `
-          insert into cekiai (data, parduotuve)
-          values (?, ?)`,
-          [new Date(req.body.data), req.body.parduotuve],
-        );
-      } catch (err) {
-        // ivyko klaida irasant duomenis
-        res.render("klaida", { err });
-        return;
-      } finally {
-        await end(conn);
-      }
-    }
-  }
-  res.redirect("/cekiai");
-});
+// // IRASO SAUGOJIIMAS
+// app.post("/cekis", async (req, res) => {
+//   if (req.body.id) {
+//     // update esama ceki
+//     const id = parseInt(req.body.id);
+//     if (
+//       !isNaN(id) &&
+//       isFinite((new Date(req.body.data)).getTime()) &&
+//       typeof req.body.parduotuve === "string" &&
+//       req.body.parduotuve.trim() !== ""
+//     ) {
+//       let conn;
+//       try {
+//         conn = await connect();
+//         await query(
+//           conn,
+//           `
+//           update cekiai
+//           set data = ? , parduotuve = ?
+//           where id = ?`,
+//           [new Date(req.body.data), req.body.parduotuve, id],
+//         );
+//       } catch (err) {
+//         // ivyko klaida gaunant duomenis
+//         res.render("klaida", { err });
+//         return;
+//       } finally {
+//         await end(conn);
+//       }
+//     }
+//   } else {
+//     // insert nauja ceki
+//     if (
+//       isFinite((new Date(req.body.data)).getTime()) &&
+//       typeof req.body.parduotuve === "string" &&
+//       req.body.parduotuve.trim() !== ""
+//     ) {
+//       let conn;
+//       try {
+//         conn = await connect();
+//         await query(
+//           conn,
+//           `
+//           insert into cekiai (data, parduotuve)
+//           values (?, ?)`,
+//           [new Date(req.body.data), req.body.parduotuve],
+//         );
+//       } catch (err) {
+//         // ivyko klaida irasant duomenis
+//         res.render("klaida", { err });
+//         return;
+//       } finally {
+//         await end(conn);
+//       }
+//     }
+//   }
+//   res.redirect("/cekiai");
+// });
 
 app.get("/cekis/:id/del", async (req, res) => {
   const id = parseInt(req.params.id);
