@@ -1,0 +1,36 @@
+{{!-- PAGRINDINIS IRASAS  --}}
+{{!-- pagal ji bus atvaizduojami duomenys is susijusios lenteles --}}
+<form action="/eilute" method="post">
+  {{#if eilute}}
+  <input type="hidden" name="id" value="{{eilute.id}}">
+  {{/if}}
+  Column1: <input type="date" name="column1" value="{{dateFormat eilute.column1}}"><br>
+  Column2: <input type="text" name="column2" value="{{eilute.column2}}"><br>
+  <input type="submit" value="Save">
+  <a href="/visaLentele">Cancel</a>
+</form>
+
+{{!-- SUSIJUSIOS LENTELES DUOMENYS --}}
+{{#if eilute}}
+<h2>Susijusi Lentele:</h2>
+<a href="/preke?cekisId={{cekis.id}}">Nauja</a>
+{{/if}}
+{{#if susijusiosEilutes}}
+<table>
+  {{!-- lenteles headerio formavimas --}}
+  <tr>
+    <th>SL-id</th>
+    <th>SL-Column1</th>
+    <th>SL-Columnn2</th>
+  </tr>
+  {{!-- lenteles eiluciu formavimas --}}
+  {{#each susijusiosEilutes}}
+  <tr>
+    <td>{{sl_id}}</td>
+    <td><a href="/susijusiLentele/{{sl_id}}">{{sl_column1}}</a></td>
+    <td>{{sl_column2}}</td>
+    <td><a href="/susijusiLentele/{{sl_id}}/del">X</a></td>
+  </tr>
+  {{/each}}
+</table>
+{{/if}}

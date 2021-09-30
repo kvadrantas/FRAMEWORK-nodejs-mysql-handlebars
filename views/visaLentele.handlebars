@@ -1,0 +1,11 @@
+<h1>Visa Lentele</h1>
+<a href="/eilute">Naujas</a>
+<ul>
+  {{#each visaLentele}}
+  <li>
+    <a href="/eilute/{{id}}">{{dateFormat column1}} {{column2}}</a>
+    <a href="/eilute/{{id}}/del">X</a>
+  </li>
+  {{/each}}
+</ul>
+<a href="/">Pagrindinis</a>
