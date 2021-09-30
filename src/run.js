@@ -176,29 +176,30 @@
 //   res.redirect("/cekiai");
 // });
 
-app.get("/cekis/:id/del", async (req, res) => {
-  const id = parseInt(req.params.id);
-  if (!isNaN(id)) {
-    let conn;
-    try {
-      conn = await connect();
-      await query(
-        conn,
-        `
-          delete from cekiai
-          where id = ?`,
-        [id],
-      );
-    } catch (err) {
-      // ivyko klaida gaunant duomenis
-      res.render("klaida", { err });
-      return;
-    } finally {
-      await end(conn);
-    }
-  }
-  res.redirect("/cekiai");
-});
+// // IRASO TRYNIMAS
+// app.get("/cekis/:id/del", async (req, res) => {
+//   const id = parseInt(req.params.id);
+//   if (!isNaN(id)) {
+//     let conn;
+//     try {
+//       conn = await connect();
+//       await query(
+//         conn,
+//         `
+//           delete from cekiai
+//           where id = ?`,
+//         [id],
+//       );
+//     } catch (err) {
+//       // ivyko klaida gaunant duomenis
+//       res.render("klaida", { err });
+//       return;
+//     } finally {
+//       await end(conn);
+//     }
+//   }
+//   res.redirect("/cekiai");
+// });
 
 app.get("/preke/:id?", async (req, res) => {
   // tikrinam ar yra perduotas id parametras

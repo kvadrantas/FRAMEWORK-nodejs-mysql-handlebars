@@ -194,3 +194,29 @@ app.post("/eilute", async (req, res) => {
   }
   res.redirect("/visaLentele");
 });
+
+// IRASO TRYNIMAS
+app.get("/eilute/:id/del", async (req, res) => {
+  const id = parseInt(req.params.id);
+  if (!isNaN(id)) {
+    let conn;
+    try {
+      conn = await connect();
+      await query(
+        conn,
+        `
+          delete from visaLentele
+          where id = ?`,
+        [id],
+      );
+    } catch (err) {
+      // ivyko klaida gaunant trinant irasa is DB
+      res.render("klaida", { err });
+      return;
+    } finally {
+      await end(conn);
+    }
+  }
+  res.redirect("/visaLentele");
+});
+
